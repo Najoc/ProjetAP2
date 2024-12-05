@@ -13,9 +13,6 @@ let read_data_from_file file =
   aux [];;
 
 
-#use "topfind";;
-#require "cryptokit";;
-#require "base64";;
   
   
 let hash_password pwd =
