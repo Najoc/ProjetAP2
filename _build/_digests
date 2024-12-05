@@ -1,0 +1,5 @@
+"Rule: ocaml: ml & cmi -> cmx & o (%=main )": "3\139\031Z\169\198U8\147\163\178w\221\020g\202"
+"Rule: ocaml: ml -> cmo & cmi (%=main )": "\176}+#\207-\224\rk\251\226t~\r\216\193"
+"Rule: ocaml dependencies ml (%=main )": "\160\t+\184k k\027\147EB\219R\245\207\183"
+"Resource: /home/Najoc/Desktop/ProjetAP2/main.ml": "\255\007\031;\160l\192\204\002\201\169*\225\024\132\003"
+"Rule: ocaml: cmx* & o* -> native (%=main )": "%\180\130 \162\161\153\220\163\188\214;?\b\162x"
