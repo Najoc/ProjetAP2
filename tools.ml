@@ -12,7 +12,6 @@ let read_data_from_file file =
   in
   aux [];;
 
-
   
   
 let hash_password pwd =
