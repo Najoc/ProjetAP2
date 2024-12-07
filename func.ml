@@ -1,3 +1,9 @@
+(*
+///////////////////////////////
+LISTS MANAGEMENT
+///////////////////////////////
+*)
+
 (*print list for debug purpose*)
 let print_data_from_list data =
 	let rec print_list lst =
@@ -15,22 +21,105 @@ let print_data_from_file file =
 	print_data_from_list data;;
 
 (*create two list using file names then concatenate them into a new one *)
-let concatenate_lists file1 file2 =
+let concatenate_files file1 file2 =
 	let list1 = Tools.read_data_from_file file1 in
 	let list2 = Tools.read_data_from_file file2 in
 	let list3 = list1@list2 in
 	list3;;
-	
-	
-	
-(*fuse two lists and eliminate redundant from two lists*)
-let fuse_and_remove_duplicates file1 file2 =
-	let wholelist = concatenate_lists file1 file2 in
-	let newlist = [] in
-	let i = 0 in
-	while(i < List.length wholelist) do
-		if List.exists (newlist, List.hd wholelist) then ()
-		else
-			newlist :: List.hd wholelist;
-	done;
-	newlist;;
+
+(*create a new list from combining two lists*)
+let concatenate_lists lst1 lst2 =
+	let list3 = lst1@lst2 in
+	list3;;
+
+(* 
+///////////////////////////
+DUPLICATES MANAGEMENT
+//////////////////////////
+*)
+
+(*Eliminate duplicates from two lists*)
+let remove_duplicates lst =
+  let rec aux seen = function
+    | [] -> List.rev seen
+    | x :: xs ->
+      if List.mem x seen then
+        aux seen xs
+      else
+        aux (x :: seen) xs
+  in
+  aux [] lst;;
+
+(*Create a list containing the duplicates from another list*)
+let find_duplicates lst =
+  let count_occurrences lst =
+    let rec aux count = function
+      | [] -> count
+      | x :: xs ->
+          let current_count = try Hashtbl.find count x with Not_found -> 0 in
+          Hashtbl.replace count x (current_count + 1);
+          aux count xs
+    in
+    let count = Hashtbl.create (List.length lst) in
+    aux count lst
+  in
+  let count = count_occurrences lst in
+  Hashtbl.fold (fun key value acc ->
+    if value > 1 then key :: acc else acc
+  ) count []
+  
+
+(*print duplicates in a list, for debug purposes*)
+let print_duplicates lst =
+  let count_occurrences lst =
+    let rec aux count = function
+      | [] -> count
+      | x :: xs ->
+          let current_count = try Hashtbl.find count x with Not_found -> 0 in
+          Hashtbl.replace count x (current_count + 1);
+          aux count xs
+    in
+    let count = Hashtbl.create (List.length lst) in
+    aux count lst
+  in
+  let count = count_occurrences lst in
+  Hashtbl.iter (fun key value ->
+    if value > 1 then
+      Printf.printf "Duplicate: (%s, %s)\n" (fst key) (snd key)
+  ) count;;
+
+(* 
+////////////////////////////
+TRIPLES EXTRACTION
+////////////////////////////
+*)
+
+(*extract clear password from depensetout using login + hashed password present from both depensetout and another applications
+Meant to work with a list of duplicates login + hashed password
+*)
+let extract_clear_password lst_hash lst_clear =
+  List.fold_left (fun acc (first1, second1) ->
+    List.fold_left (fun acc' (first2, second2) ->
+      if first1 = first2 then
+        (first1, second2) :: acc'
+      else
+        acc'
+    ) acc lst_clear
+  ) [] lst_hash
+
+(*create a triplet list. application / login / password* where s is the full name of the application and lst is a list of login + hashed password*)
+let create_triples s lst =
+  List.map (fun (first, second) -> (s, first, second)) lst;;
+
+let print_triples lst =
+  List.iter (fun (first, second, third) -> 
+    Printf.printf "(%s, %s, %s)\n" first second third) lst;;
+(*
+/////////////////////////
+OTHERS
+/////////////////////////
+*)
+
+(*Create a list with hashed password. Better used after fusing and removing duplicates*)
+let hash_every_password lst =
+  List.map (fun (first, second) -> (first, Tools.hash_password(second))) lst;;

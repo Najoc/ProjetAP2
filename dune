@@ -1,3 +1,6 @@
 (executable
 (name test)
 (libraries cryptokit base64))
+(env
+  (dev
+    (flags (:standard -warn-error -A))))
