@@ -1,5 +1,5 @@
 (executable
-(name test)
+(name main)
 (libraries cryptokit base64))
 (env
   (dev

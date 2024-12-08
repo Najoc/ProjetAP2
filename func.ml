@@ -111,9 +111,23 @@ let extract_clear_password lst_hash lst_clear =
 let create_triples s lst =
   List.map (fun (first, second) -> (s, first, second)) lst;;
 
+(*print triples for debug purposes*)
 let print_triples lst =
   List.iter (fun (first, second, third) -> 
     Printf.printf "(%s, %s, %s)\n" first second third) lst;;
+    
+let write_to_file filename data =
+  (* Open the file for writing *)
+  let out_channel = open_out filename in
+  
+  (* Iterate over the list and write each tuple to the file *)
+  List.iter (fun (str1, str2, str3) ->
+    Printf.fprintf out_channel "%s, %s, %s\n" str1 str2 str3
+  ) data;
+
+  (* Close the file after writing *)
+  close_out out_channel;;
+
 (*
 /////////////////////////
 OTHERS
