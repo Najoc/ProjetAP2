@@ -1,3 +1,7 @@
+(*Joris Cuny & Mahamat Bokhit*)
+
+print_endline("STEP 1: BY COMPARING DATA LEAKS");;
+
 print_endline("Fetching Slogram...");;
 let slogram01 = "wordlists/slogram01.txt";;
 let slogram02 = "wordlists/slogram02.txt";;
@@ -34,11 +38,29 @@ print_endline("Extracting clear password from tetedamis...");;
 let tetedamis_clear = Func.extract_clear_password tetedamis_depensetout_duplicates depensetout_unhashed;;
 print_endline("Done !");;
 
+print_endline("STEP 2: WITH TOP200000 WORDLIST");;
+
+print_endline("Preparing password list...");;
+let passwords = Func.read_passwords_from_file "wordlists/french_passwords_top20000.txt";;
+let passwords_hashed = Func.hash_french_passwords passwords;;
+let pass_hashmap = Func.combine_lists passwords passwords_hashed;;
+print_endline("Done!");;
+
+print_endline("Extracting from slogram...");;
+let pass_slogram = Func.extract_clear_password_compare_hash pass_hashmap slogram;;
+print_endline("Extracting from tetedamis...");;
+let pass_tetedamis = Func.extract_clear_password_compare_hash pass_hashmap tetedamis;;
+print_endline("Adding to results...");;
+let slogram_answer_top20k = Func.create_triples "Slogram" pass_slogram;;
+let tetedamis_answer_top20k = Func.create_triples "Tetedamis" pass_tetedamis;;
+
 print_endline("Combining Results...");;
 let slogram_answer = Func.create_triples "Slogram" slogram_clear;;
 let tetedamis_answer = Func.create_triples "Tetedamis" tetedamis_clear;;
-let answers = Func.concatenate_lists slogram_answer tetedamis_answer;;
+let answers = slogram_answer @ slogram_answer_top20k @ tetedamis_answer @ tetedamis_answer_top20k;;
+print_endline("sanitizing data...");;
+let answers_no_duplicates = Func.remove_duplicates_answer answers;;
 print_endline("writing the results in results.txt...");;
-Func.write_to_file "results.txt" answers;;
+Func.write_to_file "results.txt" answers_no_duplicates;;
 
 print_endline("Done and done !");;
